@@ -6,7 +6,7 @@ INSERT OR IGNORE INTO oauth_clients (
   scopes_json,
   created_at
 ) VALUES (
-  'tc_tcdeveloper_portal_20261112',
+  'tc_xq5ek4egujLE8Xsnt-MF03iQvxSIaWfc',
   '1',
   'TC Developer Portal',
   '["https://dev.theegget.com/auth/callback"]',
