@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 const ACCOUNTS = "https://accounts.theegget.com";
-const CLIENT_ID = "tc_tcdeveloper_portal_20261112";
+const CLIENT_ID = "tc_xq5ek4egujLE8Xsnt-MF03iQvxSIaWfc";
 const REDIRECT_URI = "https://dev.theegget.com/auth/callback";
 const TOKEN_KEY = "tcdeveloper_access_token";
 const NAV = [
