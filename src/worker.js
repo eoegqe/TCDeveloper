@@ -1,5 +1,5 @@
 const json = (data, status = 200) => Response.json(data, { status, headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
-const PORTAL_CLIENT_ID = "tc_tcdeveloper_portal_20261112";
+const PORTAL_CLIENT_ID = "tc_xq5ek4egujLE8Xsnt-MF03iQvxSIaWfc";
 const random = (length = 24) => {
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
