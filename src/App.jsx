@@ -197,23 +197,28 @@ function App() {
   };
 
   if (loading) return <div className="loading-screen"><div className="tc-mark">TC</div><div className="loader" /><span>Loading TC Developer</span></div>;
-  if (!token || !user) return <div className="auth-screen"><div className="auth-card"><div className="brand-lockup"><div className="tc-mark">TC</div><div><strong>Theegget Creations</strong><span>DEVELOPER PORTAL</span></div></div><div className="auth-divider" /><Badge tone="success">TC Accounts authentication</Badge><h1>Build with TC.</h1><p>Register your application and let people use their TC identity to sign in to your service.</p>{error && <div className="notice notice-error">{error}</div>}<button className="button button-primary full" onClick={() => startLogin()}>Continue with TC <ArrowRight size={15} /></button><div className="auth-foot"><ShieldCheck size={14} /> Your TC account credentials stay with TC Accounts.</div></div></div>;
+  if (!token || !user) return <div className="auth-screen"><div className="auth-card"><div className="brand-lockup"><div className="tc-mark">TC</div><div><strong>Theegget Creations™</strong><span>DEVELOPER PORTAL</span></div></div><div className="auth-divider" /><Badge tone="success">TC Accounts authentication</Badge><h1>Build with TC.</h1><p>Register your application and let people use their TC identity to sign in to your service.</p>{error && <div className="notice notice-error">{error}</div>}<button className="button button-primary full" onClick={() => startLogin()}>Continue with TC <ArrowRight size={15} /></button><div className="auth-foot"><ShieldCheck size={14} /> Your TC account credentials stay with TC Accounts.</div></div></div>;
 
-  const currentTitle = NAV.flatMap(x => x.items).find(x => x.id === page)?.label || "Overview";
+  const currentTitle = page === "resources" ? "Resources" : NAV.flatMap(x => x.items).find(x => x.id === page)?.label || "Overview";
+  const primaryPages = [{ id: "overview", label: "Overview" }, { id: "applications", label: "Applications" }, { id: "docs", label: "Documentation" }, { id: "resources", label: "Resources" }];
   return <div className="app-shell">
-    {mobileNav && <button className="mobile-scrim" onClick={() => setMobileNav(false)} aria-label="Close navigation" />}
-    <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
-      <div className="brand-row"><div className="tc-mark">TC</div><div className="brand-text"><strong>Theegget Creations</strong><span>DEVELOPER PORTAL</span></div><button className="mobile-close" onClick={() => setMobileNav(false)}><X size={17} /></button></div>
-      <div className="workspace-switcher"><div className="workspace-avatar">{(user.preferred_username || "T").slice(0,1).toUpperCase()}</div><div><strong>{user.preferred_username}</strong><span>Developer workspace</span></div><ChevronDown size={14} /></div>
-      <nav className="side-nav">{NAV.map(group => <div className="nav-section" key={group.section}><div className="nav-heading">{group.section}</div>{group.items.map(item => <button key={item.id} className={"nav-item " + (page === item.id ? "active" : "")} onClick={() => { setPage(item.id); setMobileNav(false); }}><item.icon size={16} /><span>{item.label}</span>{item.id === "applications" && <small>{apps.length}</small>}</button>)}</div>)}</nav>
-      <div className="sidebar-bottom"><div className="secure-note"><ShieldCheck size={15} /><strong>Secure by design</strong><p>OAuth 2.0 with PKCE. No client secrets are issued to browser apps.</p></div><button className="profile-row" onClick={signOut}><div className="profile-avatar">{(user.preferred_username || "T").slice(0,1).toUpperCase()}</div><div className="profile-info"><strong>{user.preferred_username}</strong><span>Signed in with TC</span></div><LogOut size={15} /></button></div>
-    </aside>
+    <header className="app-header">
+      <div className="header-inner">
+        <a className="brand-lockup" href="/" aria-label="Theegget Creations Developer home">
+          <div className="tc-mark">TC</div>
+          <div className="brand-copy"><strong>Theegget Creations™</strong><span>TC DEVELOPER</span></div>
+        </a>
+        <nav className="primary-nav" aria-label="Main navigation">
+          {primaryPages.map(item => <button key={item.id} className={page === item.id ? "active" : ""} onClick={() => setPage(item.id)}>{item.label}</button>)}
+        </nav>
+        <div className="header-account"><span>{user.preferred_username}</span><button className="header-signout" onClick={signOut}><LogOut size={14} /> Sign out</button></div>
+      </div>
+    </header>
     <main className="main-area">
-      <header className="topbar"><div className="topbar-left"><button className="mobile-menu" onClick={() => setMobileNav(true)}><Menu size={18} /></button><div className="breadcrumbs"><span>TC Developer</span><ChevronRight size={13} /><strong>{currentTitle}</strong></div></div><div className="topbar-actions"><span className="environment-pill"><i /> Production</span><span className="topbar-divider" /><div className="topbar-avatar">{(user.preferred_username || "T").slice(0,1).toUpperCase()}</div></div></header>
       <div className="page-content">
         {notice && <div className="inline-notice"><Check size={15} />{notice}<button onClick={() => setNotice("")}><X size={14} /></button></div>}
         {error && <div className="inline-notice error-notice">{error}<button onClick={() => setError("")}><X size={14} /></button></div>}
-        {page === "overview" && <Overview apps={apps} setPage={setPage} openCreate={openCreate} />}
+        {page === "overview" && <Overview apps={apps} setPage={id => setPage(id === "guides" ? "docs" : id)} openCreate={openCreate} />}
         {page === "applications" && <section>
           <div className="page-heading"><div><div className="eyebrow">WORKSPACE <span>/</span> APPLICATIONS</div><h1>Applications</h1><p>Manage the applications connected to your TC identity.</p></div><button className="button button-primary" onClick={openCreate}><Plus size={15} /> Create application</button></div>
           <div className="panel"><div className="toolbar"><div className="search-box"><Search size={15} /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search applications..." /></div><span className="toolbar-count">{filteredApps.length} of {apps.length} applications</span></div>
@@ -221,10 +226,11 @@ function App() {
             <div className="panel-footer"><span>Application credentials are scoped to your TC account.</span><span>{apps.length} total</span></div>
           </div>
         </section>}
-        {page === "docs" && <Docs />}
-        {page === "guides" && <Guides />}
-        {page === "status" && <Status />}
-        {page === "help" && <Help />}
+        {page === "docs" && <><Docs /><Guides /></>}
+        {page === "guides" && <><Docs /><Guides /></>}
+        {page === "resources" && <><Status /><Help /></>}
+        {page === "status" && <><Status /><Help /></>}
+        {page === "help" && <><Status /><Help /></>}
         <footer className="page-footer"><span>© {new Date().getFullYear()} Theegget Creations</span><span><ShieldCheck size={12} /> TC identity services <i /> <a href="https://accounts.theegget.com">TC Accounts <ExternalLink size={11} /></a></span></footer>
       </div>
     </main>
